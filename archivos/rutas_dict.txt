@@ -1,0 +1,1 @@
+{'escritorio': ['origenEsc', 'destinoEsc'], 'documentos': ['origenDoc', 'destinoDoc'], 'favoritos': ['origenFav', 'destinoFav'], 'imagenes': ['origenImag', 'destinoImag'],'descargas': ['origenDesc', 'destinoDesc'],'mail': ['origenMail', 'destinoMail']}
