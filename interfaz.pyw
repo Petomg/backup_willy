@@ -1,6 +1,7 @@
 from tkinter import *
 from funciones import *
 from tkinter import messagebox
+from tkinter import filedialog 
 import ast
 
 
@@ -33,10 +34,10 @@ def solicitarContra():
 		else:
 			popup.destroy()
 			panel = Toplevel()
-			panel.geometry("450x300")
-			panel.resizable(False, False)
+			panel.resizable(True, True)
 			panel.iconbitmap("imgs/icono.ico")
 			panel.title("Panel de Administrador")
+			panel.geometry("700x250")
 			panel.config(bg="#979AE8")
 
 			tkvar = StringVar()
@@ -47,6 +48,7 @@ def solicitarContra():
 
 			f = open('archivos/rutas_dict.txt', 'r+')
 			rutas = ast.literal_eval(f.read())
+			f.close()
 			def change_dropdown(*args):
 
 				print(rutas[tkvar.get().lower()])
@@ -55,16 +57,33 @@ def solicitarContra():
 
 
 			tkvar.trace('w', change_dropdown)
+
+			def cambiarOrigen():
+				file = open('archivos/rutas_dict.txt', 'w')
+				nuevo_origen = filedialog.askdirectory()
+				rutas[tkvar.get().lower()][0] = nuevo_origen
+				file.write(str(rutas))
+				file.close()
+				change_dropdown()
+
+			def cambiarDestino():
+				file = open('archivos/rutas_dict.txt', 'w')
+				nuevo_destino = filedialog.askdirectory()
+				rutas[tkvar.get().lower()][1] = nuevo_destino
+				file.write(str(rutas))
+				file.close()
+				change_dropdown()	
+
 			frame = Frame(panel, bg="#979AE8")
-			Label(frame, text="Origen: ", bg="#979AE8").grid(row=0, column=0, padx=30)
-			Label(frame, text="Destino: ",bg="#979AE8").grid(row=1, column=0, padx=30, pady=10)
+			Label(frame, text="Origen: ", bg="#979AE8").grid(row=0, column=0, padx=5)
+			Label(frame, text="Destino: ",bg="#979AE8").grid(row=1, column=0, padx=5, pady=10)
 			origenlabel = Label(frame, bg="#979AE8")
-			origenlabel.grid(row=0, column=1, padx=30)
+			origenlabel.grid(row=0, column=1, padx=5)
 			destinolabel = Label(frame, bg="#979AE8")
-			destinolabel.grid(row=1, column=1, padx=30, pady=10)
-			Button(frame, text="Cambiar").grid(row=0, column=2, padx=30)
-			Button(frame, text="Cambiar").grid(row=1, column=2, padx=30, pady=10)
-			frame.pack(pady=20)
+			destinolabel.grid(row=1, column=1, padx=5, pady=10)
+			Button(frame, text="Cambiar", command=cambiarOrigen).grid(row=0, column=2, padx=5)
+			Button(frame, text="Cambiar", command=cambiarDestino).grid(row=1, column=2, padx=5, pady=10)
+			frame.pack(pady=20, expand=True)
 
 
 
