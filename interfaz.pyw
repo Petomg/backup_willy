@@ -1,7 +1,9 @@
 from tkinter import *
 from funciones import *
 from tkinter import messagebox
-from tkinter import filedialog 
+from tkinter import filedialog
+from tkinter import ttk
+from subprocess import call
 import ast
 
 
@@ -131,8 +133,29 @@ def obtenerRutas():
 
 	f.close()
 
-	textoFinal.config(text=rutasBk)		
+	
 
+
+def realizarBackup():
+	global rutasBk
+	panel = Toplevel()
+	panel.resizable(False, False)
+	panel.iconbitmap("imgs/icono.ico")
+	panel.title("Back-up en progreso")
+	panel.geometry("300x50")
+	panel.config(bg="#979AE8")
+
+	barra = ttk.Progressbar(panel, length=200, mode='determinate')
+	barra.pack(pady=15)
+	raiz.update_idletasks()
+	barra['value'] = 0
+	for categoria in rutasBk:
+		call(["robocopy", rutasBk[categoria][0] ,  rutasBk[categoria][1] , "/S"])
+		barra['value'] += (200 / len(rutasBk))
+		raiz.update_idletasks()
+
+	panel.destroy()	
+	
 
 opciones = Frame()
 opciones.config(bg = "#979AE8", pady=50)
@@ -144,8 +167,8 @@ Checkbutton(opciones, text="Descargas", variable=descargas, onvalue=1, offvalue=
 Checkbutton(opciones, text="Mail", variable=mail, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=2, column=1, sticky='w')
 opciones.pack(anchor="center")
 
-textoFinal = Label(raiz)
-textoFinal.pack()
+Button(raiz, text="Comenzar", command=realizarBackup).pack()
+
 
 print(rutasBk)
 
