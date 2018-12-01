@@ -1,9 +1,10 @@
 from tkinter import *
-from funciones import *
 from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import ttk
 from subprocess import call
+import os
+import datetime
 import ast
 
 
@@ -67,6 +68,7 @@ def solicitarContra():
 				file.write(str(rutas))
 				file.close()
 				change_dropdown()
+				panel.deiconify()
 
 			def cambiarDestino():
 				file = open('archivos/rutas_dict.txt', 'w')
@@ -74,7 +76,8 @@ def solicitarContra():
 				rutas[tkvar.get().lower()][1] = nuevo_destino
 				file.write(str(rutas))
 				file.close()
-				change_dropdown()	
+				change_dropdown()
+				panel.deiconify()	
 
 			frame = Frame(panel, bg="#979AE8")
 			Label(frame, text="Origen: ", bg="#979AE8").grid(row=0, column=0, padx=5)
@@ -137,6 +140,9 @@ def obtenerRutas():
 
 
 def realizarBackup():
+
+	respuesta = messagebox.askokcancel("Back-up", "¿Desea apagar el equipo al finalizar?")
+	raiz.withdraw()
 	global rutasBk
 	panel = Toplevel()
 	panel.resizable(False, False)
@@ -154,7 +160,19 @@ def realizarBackup():
 		barra['value'] += (200 / len(rutasBk))
 		raiz.update_idletasks()
 
-	panel.destroy()	
+	with open('archivos/ultimo.txt', 'w') as f:
+		f.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+	panel.destroy()
+
+	if respuesta:
+		raiz.destroy()
+		os.system("shutdown /s /t 1")
+	else:
+		messagebox.showinfo("Back-up", "Back-up finalizado.")
+		raiz.deiconify()	
+
+
 	
 
 opciones = Frame()
