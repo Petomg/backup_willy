@@ -10,8 +10,7 @@ from tkinter import messagebox
 import os
 
 rutasBk = {}
-raiz = Tk()
-raiz.withdraw()
+
 
 def backupAutomatico():
 	respuesta = messagebox.askokcancel("Back-up", "¿Desea apagar el equipo al finalizar?")
@@ -34,7 +33,7 @@ def backupAutomatico():
 		panel.update_idletasks()
 
 	with open('archivos/ultimo.txt', 'w') as f:
-		f.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+		f.write(datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
 
 	panel.destroy()
 
@@ -42,6 +41,7 @@ def backupAutomatico():
 		os.system("shutdown /s /t 1")
 	else:
 		messagebox.showinfo("Back-up", "Back-up finalizado.")	
+	
 
 
 actual = datetime.datetime.now() # Se actualiza con la fecha actual cada vez que es ejecutado
@@ -49,7 +49,7 @@ actual = datetime.datetime.now() # Se actualiza con la fecha actual cada vez que
 with open('archivos/ultimo.txt', 'r') as f:
 	ult_bkup = f.read()
 
-ult_bkup = datetime.datetime.strptime(ult_bkup, '%Y-%m-%d %H:%M:%S')
+ult_bkup = datetime.datetime.strptime(ult_bkup, '%d/%m/%Y %H:%M:%S')
 
 diferencia = actual - ult_bkup  # devuelve deltatime
 
@@ -59,13 +59,20 @@ with open('archivos/rutas_dict.txt') as f:
 
 
 if diferencia.days > 30 and diferencia.days < 60:
+	raiz = Tk()
+	raiz.iconbitmap("imgs/icono.ico")
+	raiz.withdraw()
 	respuesta = messagebox.askokcancel("Backup", "Se recomienda hacer Back-up. Desea realizarlo ahora?")
 	if respuesta:
 		backupAutomatico()
+	raiz.destroy()
+	raiz.mainloop()	
 
 elif diferencia.days >= 60:
+	raiz = Tk()
+	raiz.iconbitmap("imgs/icono.ico")
+	raiz.withdraw()
 	backupAutomatico()		
+	raiz.destroy()
+	raiz.mainloop()	
 		
-		
-raiz.destroy()
-raiz.mainloop()

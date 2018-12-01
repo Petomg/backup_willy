@@ -3,6 +3,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import ttk
 from subprocess import call
+from hashlib import md5
 import os
 import datetime
 import ast
@@ -31,7 +32,9 @@ def solicitarContra():
 	contra.pack(pady = 10)
 
 	def panelAdmin():
-		if contra.get() != 'peto':
+		with open('archivos/hash.txt', 'r') as f:
+			contramd5 = f.read()
+		if str(md5(contra.get().encode()).digest()) != contramd5:
 			popup.destroy()
 			messagebox.showwarning("Advertencia", "La contraseña ingresada no es correcta")
 		else:
@@ -44,7 +47,7 @@ def solicitarContra():
 			panel.config(bg="#979AE8")
 
 			tkvar = StringVar()
-			opciones = {'Escritorio', 'Documentos', 'Favoritos', 'Imagenes', 'Descargas', 'Mail'}
+			opciones = {'Escritorio', 'Documentos', 'Favoritos', 'Imagenes', 'Videos', 'Mail', 'Musica'}
 			tkvar.set('-----------')
 			scrolldown = OptionMenu(panel, tkvar, *opciones)
 			scrolldown.pack(pady=30)
@@ -109,7 +112,8 @@ header.pack(fill='x', anchor='n')
 escritorio = IntVar()
 documentos = IntVar()
 favoritos = IntVar()
-descargas = IntVar()
+videos = IntVar()
+musica = IntVar()
 imagenes = IntVar()
 mail = IntVar()
 
@@ -129,10 +133,12 @@ def obtenerRutas():
 		rutasBk['favoritos'] = rutas['favoritos']
 	if imagenes.get() == 1:
 		rutasBk['imagenes'] = rutas['imagenes'] 
-	if descargas.get() == 1:
-		rutasBk['descargas'] = rutas['descargas']
+	if videos.get() == 1:
+		rutasBk['videos'] = rutas['videos']
 	if mail.get() == 1:
-		rutasBk['mail'] = rutas['mail'] 
+		rutasBk['mail'] = rutas['mail']
+	if musica.get() == 1:
+		rutasBk['musica'] = rutas['musica']
 
 	f.close()
 
@@ -144,6 +150,7 @@ def realizarBackup():
 	respuesta = messagebox.askokcancel("Back-up", "¿Desea apagar el equipo al finalizar?")
 	raiz.withdraw()
 	global rutasBk
+	global ult_bk
 	panel = Toplevel()
 	panel.resizable(False, False)
 	panel.iconbitmap("imgs/icono.ico")
@@ -161,7 +168,7 @@ def realizarBackup():
 		raiz.update_idletasks()
 
 	with open('archivos/ultimo.txt', 'w') as f:
-		f.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+		f.write(datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
 
 	panel.destroy()
 
@@ -170,7 +177,11 @@ def realizarBackup():
 		os.system("shutdown /s /t 1")
 	else:
 		messagebox.showinfo("Back-up", "Back-up finalizado.")
-		raiz.deiconify()	
+		raiz.deiconify()
+	with open('archivos/ultimo.txt', 'r') as f:
+		ultimo = f.read()
+	ult_bk.config(text=ultimo)	
+	raiz.update_idletasks()		
 
 
 	
@@ -181,16 +192,21 @@ Checkbutton(opciones, text="Escritorio", variable=escritorio, onvalue=1, offvalu
 Checkbutton(opciones, text="Documentos", variable=documentos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=1, column=0, sticky='w')
 Checkbutton(opciones, text="Favoritos", variable=favoritos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=2, column=0, sticky='w')
 Checkbutton(opciones, text="Imagenes", variable=imagenes, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=0, column=1, sticky='w')
-Checkbutton(opciones, text="Descargas", variable=descargas, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=1, column=1, sticky='w')
+Checkbutton(opciones, text="Videos", variable=videos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=1, column=1, sticky='w')
 Checkbutton(opciones, text="Mail", variable=mail, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=2, column=1, sticky='w')
+Checkbutton(opciones, text="Musica", variable=musica, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=3, column=0, sticky='w')
 opciones.pack(anchor="center")
 
 Button(raiz, text="Comenzar", command=realizarBackup).pack()
 
+#Ultimo back up
+Label(raiz, text="Ultimo Back-up:").place(x=10, y=240)
+with open('archivos/ultimo.txt', 'r') as f:
+	ultimo = f.read()
 
-print(rutasBk)
-
-
+ult_bk = Label(raiz)
+ult_bk.config(text=ultimo)
+ult_bk.place(x=10, y=260)
 
 
 
