@@ -41,7 +41,7 @@ def backupAutomatico():
 		os.system("shutdown /s /t 1")
 	else:
 		messagebox.showinfo("Back-up", "Back-up finalizado.")	
-	
+
 
 
 actual = datetime.datetime.now() # Se actualiza con la fecha actual cada vez que es ejecutado

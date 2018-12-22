@@ -17,19 +17,19 @@ raiz.resizable(False, False)
 raiz.iconbitmap("imgs/icono.ico")
 raiz.title("BackUp")
 raiz.config(bg="#979AE8")
-
 #Panel administrador
 
 def solicitarContra():
 	popup = Toplevel()
-	popup.geometry("300x100")
+	popup.geometry("300x120")
 	popup.resizable(False, False)
 	popup.iconbitmap("imgs/icono.ico")
 	popup.title("Contraseña Requerida")
 	popup.config(bg="#979AE8")
 
+	Label(popup, text="Ingrese la contraseña", font=10, bg="#979AE8").pack(pady=10)
 	contra = Entry(popup, show='*')
-	contra.pack(pady = 10)
+	contra.pack(pady = 2)
 
 	def panelAdmin():
 		with open('archivos/hash.txt', 'r') as f:
@@ -83,28 +83,28 @@ def solicitarContra():
 				panel.deiconify()	
 
 			frame = Frame(panel, bg="#979AE8")
-			Label(frame, text="Origen: ", bg="#979AE8").grid(row=0, column=0, padx=5)
-			Label(frame, text="Destino: ",bg="#979AE8").grid(row=1, column=0, padx=5, pady=10)
+			Label(frame, text="Origen: ", bg="#979AE8", font=('Arial', 10, 'bold')).grid(row=0, column=0, padx=5)
+			Label(frame, text="Destino: ", bg="#979AE8", font=('Arial', 10, 'bold')).grid(row=1, column=0, padx=5, pady=10)
 			origenlabel = Label(frame, bg="#979AE8")
 			origenlabel.grid(row=0, column=1, padx=5)
 			destinolabel = Label(frame, bg="#979AE8")
 			destinolabel.grid(row=1, column=1, padx=5, pady=10)
-			Button(frame, text="Cambiar", command=cambiarOrigen).grid(row=0, column=2, padx=5)
-			Button(frame, text="Cambiar", command=cambiarDestino).grid(row=1, column=2, padx=5, pady=10)
+			Button(frame, text="Cambiar", command=cambiarOrigen, bg="#7B61E8", fg="white", font=('Arial', 10), cursor="hand2").grid(row=0, column=2, padx=5)
+			Button(frame, text="Cambiar", command=cambiarDestino, bg="#7B61E8", fg="white", font=('Arial', 10), cursor="hand2").grid(row=1, column=2, padx=5, pady=10)
 			frame.pack(pady=20, expand=True)
 
 
 
 
-	Button(popup, text='Enviar', command=panelAdmin).pack(pady = 15)
+	Button(popup, text='Enviar', command=panelAdmin, bg="#7B61E8", fg="white", font=('Arial', 10), cursor="hand2").pack(pady = 15)
 
 
 # Armo el Header
 header=Frame()
-header.config(bg="#979AE8", pady=10)
-Label(header, text="Applicación Back-up", font=20, bg="#979AE8", padx=10).pack(side="left", anchor="n")
+header.config(bg="#7B61E8", pady=10)
+Label(header, text="Applicación Back-up", font=("Georgia", 18),fg="white", bg="#7B61E8", padx=10).pack(side="left", anchor="n")
 configuracionimg = PhotoImage(file="imgs/conf.png")
-Button(header, image=configuracionimg, bg="#979AE8", command=solicitarContra).pack(side="right", anchor="n") # TODO: Pedir contraseña panel de admin
+Button(header, image=configuracionimg, bg="#979AE8", command=solicitarContra, cursor="hand2").pack(side="right", anchor="n") # TODO: Pedir contraseña panel de admin
 header.pack(fill='x', anchor='n')
 
 
@@ -154,12 +154,13 @@ def realizarBackup():
 	panel = Toplevel()
 	panel.resizable(False, False)
 	panel.iconbitmap("imgs/icono.ico")
-	panel.title("Back-up en progreso")
-	panel.geometry("300x50")
+	panel.title("Back-up en proceso")
+	panel.geometry("300x85")
 	panel.config(bg="#979AE8")
 
+	Label(panel, text="Realizando Back-up...", font=12, bg="#979AE8").pack(pady=10)
 	barra = ttk.Progressbar(panel, length=200, mode='determinate')
-	barra.pack(pady=15)
+	barra.pack(pady=5)
 	raiz.update_idletasks()
 	barra['value'] = 0
 	for categoria in rutasBk:
@@ -188,6 +189,15 @@ def realizarBackup():
 
 opciones = Frame()
 opciones.config(bg = "#979AE8", pady=50)
+
+#escimg = PhotoImage(file="imgs/escritoriono.png")
+#docimg = PhotoImage(file="imgs/documentosno.png")
+#favimg = PhotoImage(file="imgs/favoritosno.png")
+#imgimg = PhotoImage(file="imgs/fotosno.png")
+#vidimg = PhotoImage(file="imgs/videosno.png")
+#mailimg = PhotoImage(file="imgs/correono.png")
+#musimg = PhotoImage(file="imgs/musicano.png")
+
 Checkbutton(opciones, text="Escritorio", variable=escritorio, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=0, column=0, sticky='w')
 Checkbutton(opciones, text="Documentos", variable=documentos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=1, column=0, sticky='w')
 Checkbutton(opciones, text="Favoritos", variable=favoritos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=2, column=0, sticky='w')
@@ -197,16 +207,20 @@ Checkbutton(opciones, text="Mail", variable=mail, onvalue=1, offvalue=0, bg = "#
 Checkbutton(opciones, text="Musica", variable=musica, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=3, column=0, sticky='w')
 opciones.pack(anchor="center")
 
-Button(raiz, text="Comenzar", command=realizarBackup).pack()
+
+iniciarimg = PhotoImage(file="imgs/iniciar.png")
+iniciar = Button(raiz, text="Comenzar", command=realizarBackup, image=iniciarimg, cursor="hand2")
+iniciar.config(borderwidth=0)
+iniciar.pack()
 
 #Ultimo back up
-Label(raiz, text="Ultimo Back-up:").place(x=10, y=240)
+Label(raiz, text="Ultimo Back-up:", bg="#7B61E8", fg="white", width=18, font=('Arial', 10)).place(x=10, y=248)
 with open('archivos/ultimo.txt', 'r') as f:
 	ultimo = f.read()
 
 ult_bk = Label(raiz)
-ult_bk.config(text=ultimo)
-ult_bk.place(x=10, y=260)
+ult_bk.config(text=ultimo, bg="#7B61E8", fg="white", width=18, font=('Arial', 10))
+ult_bk.place(x=10, y=268)
 
 
 
