@@ -40,10 +40,10 @@ def solicitarContra():
 		else:
 			popup.destroy()
 			panel = Toplevel()
-			panel.resizable(True, True)
+			panel.resizable(True, False)
 			panel.iconbitmap("imgs/icono.ico")
 			panel.title("Panel de Administrador")
-			panel.geometry("700x250")
+			panel.geometry("750x300")
 			panel.config(bg="#979AE8")
 
 			tkvar = StringVar()
@@ -65,22 +65,30 @@ def solicitarContra():
 			tkvar.trace('w', change_dropdown)
 
 			def cambiarOrigen():
-				file = open('archivos/rutas_dict.txt', 'w')
 				nuevo_origen = filedialog.askdirectory()
 				rutas[tkvar.get().lower()][0] = nuevo_origen
-				file.write(str(rutas))
-				file.close()
 				change_dropdown()
 				panel.deiconify()
 
 			def cambiarDestino():
-				file = open('archivos/rutas_dict.txt', 'w')
 				nuevo_destino = filedialog.askdirectory()
 				rutas[tkvar.get().lower()][1] = nuevo_destino
+				change_dropdown()
+				panel.deiconify()
+
+			def guardarCambios():
+				file = open('archivos/rutas_dict.txt', 'w')
 				file.write(str(rutas))
 				file.close()
-				change_dropdown()
-				panel.deiconify()	
+				messagebox.showwarning("Guardar", "Cambios guardados.")
+				panel.deiconify()
+
+			def Cancelar():
+				respuesta = messagebox.askokcancel("Cancelar", "¿Seguro que desea descartar los cambios realizados?")
+				if respuesta:
+					panel.destroy()
+				else:
+					panel.deiconify()				
 
 			frame = Frame(panel, bg="#979AE8")
 			Label(frame, text="Origen: ", bg="#979AE8", font=('Arial', 10, 'bold')).grid(row=0, column=0, padx=5)
@@ -92,8 +100,10 @@ def solicitarContra():
 			Button(frame, text="Cambiar", command=cambiarOrigen, bg="#7B61E8", fg="white", font=('Arial', 10), cursor="hand2").grid(row=0, column=2, padx=5)
 			Button(frame, text="Cambiar", command=cambiarDestino, bg="#7B61E8", fg="white", font=('Arial', 10), cursor="hand2").grid(row=1, column=2, padx=5, pady=10)
 			frame.pack(pady=20, expand=True)
-
-
+			frame2 = Frame(panel, bg="#979AE8")
+			Button(frame2, text="Guardar cambios", command=guardarCambios, bg="green", fg="black", font=('Arial', 11), cursor="hand2").grid(row=0, column=0)
+			Button(frame2, text="Cancelar", command=Cancelar, bg="red", fg="black", font=('Arial', 11), cursor="hand2").grid(row=0, column=1, padx=5)
+			frame2.pack(anchor='s',side='right', padx=10, pady=10)
 
 
 	Button(popup, text='Enviar', command=panelAdmin, bg="#7B61E8", fg="white", font=('Arial', 10), cursor="hand2").pack(pady = 15)
@@ -198,20 +208,20 @@ opciones.config(bg = "#979AE8", pady=50)
 #mailimg = PhotoImage(file="imgs/correono.png")
 #musimg = PhotoImage(file="imgs/musicano.png")
 
-Checkbutton(opciones, text="Escritorio", variable=escritorio, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=0, column=0, sticky='w')
-Checkbutton(opciones, text="Documentos", variable=documentos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=1, column=0, sticky='w')
-Checkbutton(opciones, text="Favoritos", variable=favoritos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=2, column=0, sticky='w')
-Checkbutton(opciones, text="Imagenes", variable=imagenes, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=0, column=1, sticky='w')
-Checkbutton(opciones, text="Videos", variable=videos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=1, column=1, sticky='w')
-Checkbutton(opciones, text="Mail", variable=mail, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=2, column=1, sticky='w')
-Checkbutton(opciones, text="Musica", variable=musica, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas).grid(row=3, column=0, sticky='w')
+Checkbutton(opciones, text="Escritorio", variable=escritorio, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas, font=('Arial', 11, 'bold'), activebackground="#7B61E8").grid(row=0, column=0, sticky='w')
+Checkbutton(opciones, text="Documentos", variable=documentos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas, font=('Arial', 11, 'bold'), activebackground="#7B61E8").grid(row=1, column=0, sticky='w')
+Checkbutton(opciones, text="Favoritos", variable=favoritos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas, font=('Arial', 11, 'bold'), activebackground="#7B61E8").grid(row=2, column=0, sticky='w')
+Checkbutton(opciones, text="Imagenes", variable=imagenes, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas, font=('Arial', 11, 'bold'), activebackground="#7B61E8").grid(row=0, column=1, sticky='w')
+Checkbutton(opciones, text="Videos", variable=videos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas, font=('Arial', 11, 'bold'), activebackground="#7B61E8").grid(row=1, column=1, sticky='w')
+Checkbutton(opciones, text="Mail", variable=mail, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas, font=('Arial', 11, 'bold'), activebackground="#7B61E8").grid(row=2, column=1, sticky='w')
+Checkbutton(opciones, text="Musica", variable=musica, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas, font=('Arial', 11, 'bold'), activebackground="#7B61E8").grid(row=3, column=0, sticky='w')
 opciones.pack(anchor="center")
 
 
 iniciarimg = PhotoImage(file="imgs/iniciar.png")
 iniciar = Button(raiz, text="Comenzar", command=realizarBackup, image=iniciarimg, cursor="hand2")
 iniciar.config(borderwidth=0)
-iniciar.pack()
+iniciar.place(x=220, y=255)
 
 #Ultimo back up
 Label(raiz, text="Ultimo Back-up:", bg="#7B61E8", fg="white", width=18, font=('Arial', 10)).place(x=10, y=248)
