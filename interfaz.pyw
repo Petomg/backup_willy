@@ -80,7 +80,7 @@ def solicitarContra():
 				file = open('archivos/rutas_dict.txt', 'w')
 				file.write(str(rutas))
 				file.close()
-				messagebox.showwarning("Guardar", "Cambios guardados.")
+				messagebox.showinfo("Guardar", "Cambios guardados.")
 				panel.deiconify()
 
 			def Cancelar():
@@ -165,21 +165,32 @@ def realizarBackup():
 	panel.resizable(False, False)
 	panel.iconbitmap("imgs/icono.ico")
 	panel.title("Back-up en proceso")
-	panel.geometry("300x85")
+	panel.overrideredirect(True)
+	panel.geometry("300x85+500+300")
 	panel.config(bg="#979AE8")
 
 	Label(panel, text="Realizando Back-up...", font=12, bg="#979AE8").pack(pady=10)
 	barra = ttk.Progressbar(panel, length=200, mode='determinate')
-	barra.pack(pady=5)
+	barra.pack(pady=10)
 	raiz.update_idletasks()
 	barra['value'] = 0
+	error = False
 	for categoria in rutasBk:
-		call(["robocopy", rutasBk[categoria][0] ,  rutasBk[categoria][1] , "/S"])
+		logpath = os.path.abspath("logs/{}.txt".format(categoria))
+		call(["robocopy", rutasBk[categoria][0] ,  rutasBk[categoria][1] , "/S", "/COPY:DAT", "/MIR", "/R:1", "/W:3", "/log:{}".format(logpath)], shell=True)
 		barra['value'] += (200 / len(rutasBk))
 		raiz.update_idletasks()
 
-	with open('archivos/ultimo.txt', 'w') as f:
-		f.write(datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+		with open(logpath, 'r') as f:
+			texto = f.read()
+			if "ERROR 2" in texto or "ERROR 3" in texto:
+				error = True
+
+	if error:
+		messagebox.showerror("Error", "Ocurrió un error durante el Back-up. Por favor reintente más tarde")
+	else:	
+		with open('archivos/ultimo.txt', 'w') as f:
+			f.write(datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
 
 	panel.destroy()
 
@@ -187,7 +198,8 @@ def realizarBackup():
 		raiz.destroy()
 		os.system("shutdown /s /t 1")
 	else:
-		messagebox.showinfo("Back-up", "Back-up finalizado.")
+		if not error:
+			messagebox.showinfo("Back-up", "Back-up finalizado.")
 		raiz.deiconify()
 	with open('archivos/ultimo.txt', 'r') as f:
 		ultimo = f.read()
@@ -199,14 +211,6 @@ def realizarBackup():
 
 opciones = Frame()
 opciones.config(bg = "#979AE8", pady=50)
-
-#escimg = PhotoImage(file="imgs/escritoriono.png")
-#docimg = PhotoImage(file="imgs/documentosno.png")
-#favimg = PhotoImage(file="imgs/favoritosno.png")
-#imgimg = PhotoImage(file="imgs/fotosno.png")
-#vidimg = PhotoImage(file="imgs/videosno.png")
-#mailimg = PhotoImage(file="imgs/correono.png")
-#musimg = PhotoImage(file="imgs/musicano.png")
 
 Checkbutton(opciones, text="Escritorio", variable=escritorio, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas, font=('Arial', 11, 'bold'), activebackground="#7B61E8").grid(row=0, column=0, sticky='w')
 Checkbutton(opciones, text="Documentos", variable=documentos, onvalue=1, offvalue=0, bg = "#979AE8", command=obtenerRutas, font=('Arial', 11, 'bold'), activebackground="#7B61E8").grid(row=1, column=0, sticky='w')
